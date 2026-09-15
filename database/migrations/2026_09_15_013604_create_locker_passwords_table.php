@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('locker_passwords', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->unsignedTinyInteger('role')->default(1)->comment('1: User, 2: Staff');
-            $table->string('password');
-            $table->rememberToken();
+            $table->foreignId('locker_id')->constrained()->cascadeOnDelete();
+            $table->string('otp')->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('locker_passwords');
     }
 };
