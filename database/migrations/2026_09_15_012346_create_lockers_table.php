@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('locker_title');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('role')->default(1)->comment('1: User, 2: Staff');  
-            $table->unsignedTinyInteger('status')->default(1)->comment('1: Available, 2: Maintenance, 3: In Use');
             $table->string('start');
             $table->string('releave');
             $table->timestamps();
