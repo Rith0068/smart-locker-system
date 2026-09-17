@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('locker_histories', function (Blueprint $table) {
+        Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('locker_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained();
-            $table->string('start')->nullable();
-            $table->string('releave')->nullable();
+            $table->string('description');
+            $table->foreignId('lockers_id')->constrained();
+            $table->unsignedTinyInteger('status')->default(1)->comment('1: Available, 2: Maintenance, 3: In Use');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('locker_histories');
+        Schema::dropIfExists('maintenances');
     }
 };
