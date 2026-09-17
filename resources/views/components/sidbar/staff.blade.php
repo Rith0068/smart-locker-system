@@ -19,7 +19,7 @@
   <div id="overlay" class="md:hidden fixed inset-0 bg-black/40 z-30"></div>
 
   <!-- Sidebar -->
-  <aside id="sidebar" class="w-full md:w-80 shrink-0 border-r flex flex-col bg-white h-screen md:h-auto pt-16 md:pt-8">
+  <aside id="sidebar" class="w-full md:w-80 shrink-0 border-r flex flex-col bg-white h-screen md:h-auto pt-16 md:pt-0">
     <div class="hidden md:flex items-center py-6 md:py-10 px-5">
       <img src="{{ asset('images/logo.png') }}" class="w-16 h-16 md:w-20 md:h-20" alt="logo">
       <div class="flex flex-col px-4 py-2">
@@ -29,19 +29,19 @@
     </div>
 
     <nav class="flex flex-col px-5 gap-2 pt-3">
-      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] hover:font-bold hover:bg-gray-100">
+      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
         Dash board
       </a>
-      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] hover:font-bold hover:bg-gray-100">
+      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
         User
       </a>
-      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] hover:font-bold hover:bg-gray-100">
+      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
         Usage
       </a>
-      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] hover:font-bold hover:bg-gray-100">
+      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
         Maintenance
       </a>
-      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] hover:font-bold hover:bg-gray-100">
+      <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
         Report
       </a>
     </nav>
