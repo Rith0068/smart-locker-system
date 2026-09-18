@@ -31,7 +31,7 @@
     </style>
 </head>
 <body>
-    <div class="flex justify-start">
+    <div class="flex justify-start gap-10">
         <x-sidbar.staff />
         @yield('content')
     </div>
