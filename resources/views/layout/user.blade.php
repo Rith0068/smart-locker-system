@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-    <div class="flex justify-start">
+    <div class="flex justify-start gap-10">
         <x-sidbar.user />
         @yield('content')
     </div>
