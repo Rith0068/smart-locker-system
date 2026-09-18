@@ -33,9 +33,7 @@
 <body>
     <div class="flex justify-start">
         <x-sidbar.staff />
-        <main class="md:pl-80">
-            @yield('content')
-        </main>
+        @yield('content')
     </div>
 </body>
 </html>
