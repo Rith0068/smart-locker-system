@@ -10,9 +10,7 @@
 <body>
     <div class="flex justify-start">
         <x-sidbar.user />
-        <main class="md:pl-80">
-            @yield('content')
-        </main>
+        @yield('content')
     </div>
 </body>
 </html>
