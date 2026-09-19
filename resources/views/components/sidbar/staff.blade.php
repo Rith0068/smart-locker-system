@@ -30,7 +30,7 @@
   </div>
 
   <nav class="flex flex-col px-5 gap-2 pt-3">
-    <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
+    <a href="{{ route('admin.dashboard') }}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       Dashboard
     </a>
     <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
@@ -39,7 +39,7 @@
     <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       Usage
     </a>
-    <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
+    <a href="{{ route('maintenance.index') }}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       Maintenance
     </a>
     <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
