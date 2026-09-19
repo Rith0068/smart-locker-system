@@ -6,29 +6,7 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <style>
-        /* Slide-in behavior for mobile sidebar */
-        #sidebar {
-            transition: transform 0.25s ease-in-out;
-        }
-        @media (max-width: 767px) {
-            #sidebar {
-            position: fixed;
-            inset: 0;
-            z-index: 60;
-            transform: translateX(-100%);
-            }
-            #sidebar.open {
-            transform: translateX(0);
-            }
-        }
-        #overlay {
-            display: none;
-        }
-        #overlay.open {
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css">
 </head>
 <body>
     <div class="flex justify-start gap-10">
