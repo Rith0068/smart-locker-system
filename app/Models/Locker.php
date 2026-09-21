@@ -11,23 +11,29 @@ class Locker extends Model
 {
     use HasFactory;
 
+    const ROLE_USER = 1;
+    const ROLE_STAFF = 2;
+
     protected $fillable = [
         'locker_title',
         'user_id',
-        'locations_id',
+        'role',
         'start',
         'releave',
-        'img',
     ];
 
-
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function location(): BelongsTo
+    public function maintenances()
     {
-        return $this->belongsTo(LockerLocation::class, 'locations_id');
+        return $this->hasMany(Maintenance::class, 'lockers_id');
+    }
+
+    public function currentMaintenance()
+    {
+        return $this->hasOne(Maintenance::class, 'lockers_id')->latestOfMany();
     }
 }
