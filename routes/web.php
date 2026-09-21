@@ -1,9 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\LocationController;
+
+Route::get('/login',[LoginController::class, 'index']);
+
+
+Route::get('/register', [RegisterController::class, 'index']);
 
 //user route
 Route::prefix('user')->group(function (){
