@@ -18,7 +18,7 @@
 <div id="overlay" class="md:hidden fixed inset-0 bg-black/40 z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed md:static top-0 left-0 w-72 md:w-80 shrink-0 border-r flex flex-col bg-white h-screen z-[65]
+<aside id="sidebar" class="fixed md:static top-0 left-0 w-72 max-w-[85vw] md:w-80 shrink-0 border-r flex flex-col bg-white h-dvh max-h-dvh z-[65]
        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out
        pt-16 md:pt-0">
   <div class="hidden md:flex items-center py-6 md:py-10 px-5">
@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <nav class="flex flex-col px-5 gap-2 pt-3">
+  <nav class="flex flex-col px-5 gap-2 pt-3 overflow-y-auto flex-1 min-h-0">
     <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       Dashboard
     </a>
@@ -41,15 +41,18 @@
     </a>
   </nav>
 
-  <div class="flex flex-col px-5 pt-10 md:pt-40 pb-5 mt-auto">
-    <div class="flex justify-start gap-4 mb-4">
-      <p class="bg-blue-200 rounded-lg px-2 py-1 text-[14px] md:text-[16px]">Staff</p>
-      <p class="bg-gray-100 rounded-lg px-2 py-1 text-[14px] md:text-[16px]">Jan done</p>
+<div class="flex flex-col px-5 pt-10 md:pt-40 pb-5 mt-auto shrink-0">
+      <div class="flex justify-start gap-4 mb-4">
+        <p class="bg-blue-200 rounded-lg px-2 py-1 text-[14px] md:text-[16px]">{{ auth()->user()->role === 2 ? 'Staff' : 'User' }}</p>
+        <p class="bg-gray-100 rounded-lg px-2 py-1 text-[14px] md:text-[16px]">{{ auth()->user()->name }}</p>
+      </div>
+      <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="flex justify-center border border-gray-200 py-2 px-10 rounded-lg hover:bg-red-400 hover:text-gray-100">
+          Log out
+        </button>
+      </form>
     </div>
-    <button class="flex justify-center border border-gray-200 py-2 px-10 rounded-lg hover:bg-red-400 hover:text-gray-100">
-      Log out
-    </button>
-  </div>
 </aside>
 
 <script>
