@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('lockers', function (Blueprint $table) {
             $table->id();
             $table->string('locker_title');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('locations_id')->constrained()->cascadeOnDelete();
             $table->string('start');
             $table->string('releave');
+            $table->string('status')->default('available');
             $table->timestamps();
         });
     }

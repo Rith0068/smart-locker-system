@@ -15,9 +15,16 @@ class UserData extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'password' => '123']
-        );
+        $users = [
+            ['name' => 'Test User', 'email' => 'test@example.com', 'role' => 1],
+            ['name' => 'Staff Member', 'email' => 'staff@example.com', 'role' => 2],
+        ];
+
+        foreach ($users as $user) {
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                ['name' => $user['name'], 'role' => $user['role'], 'password' => '123']
+            );
+        }
     }
 }
