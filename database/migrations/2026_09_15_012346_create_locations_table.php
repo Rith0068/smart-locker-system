@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name_location');
             $table->string('adress');
-            $table->foreignId('lockers_id')->constrained();
+            $table->string('img');
             $table->timestamps();
         });
     }
