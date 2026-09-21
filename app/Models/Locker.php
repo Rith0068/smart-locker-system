@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 class Locker extends Model
 {
     use HasFactory;
@@ -36,4 +35,8 @@ class Locker extends Model
     {
         return $this->hasOne(Maintenance::class, 'lockers_id')->latestOfMany();
     }
+    public function location()
+{
+    return $this->belongsTo(LockerLocation::class, 'locations_id');
+}
 }
