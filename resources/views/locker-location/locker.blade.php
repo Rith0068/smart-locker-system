@@ -2,6 +2,18 @@
 
 @section('content')
 <div class="flex flex-col pt-5 w-full sm:px-6 lg:px-8">
+    @if (session('success'))
+        <div class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <form action="{{ route('location-user') }}" method="get">
         <button type="submit" class="group">
             <p class="flex items-center gap-2">
@@ -27,29 +39,57 @@
             <h6 class="text-lg sm:text-xl font-bold">Locker locations</h6>
             <p class="text-sm text-gray-500">Choose a location to see live locker availability.</p>
         </div>
-
-        <select class="border border-gray-200 rounded-md px-3 py-2 text-sm font-medium">
-            <option>Available</option>
-            <option>Occupied</option>
-        </select>
     </div>
+
+    @php
+        $myInUse = $locker->lockers->firstWhere(function ($item) {
+            return $item->status === 'in_use' && $item->user_id === auth()->id();
+        });
+    @endphp
 
     <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         @forelse($locker->lockers as $lockers)
             @php
-                $isAvailable = $lockers->status === 'available'; // adjust to your actual status field/value
+                $isAvailable = $lockers->status === 'available';
+                $isMine = $lockers->user_id === auth()->id() && $lockers->status === 'in_use';
             @endphp
             <div class="border border-gray-100 rounded-xl p-3 shadow-sm bg-white">
                 <h6 class="font-bold text-base mb-2">{{ $lockers->locker_title }}</h6>
 
                 <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-2
                     {{ $isAvailable ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' }}">
-                    {{ $isAvailable ? 'AVAILABLE' : 'OCCUPIED' }}
+                    {{ $isAvailable ? 'AVAILABLE' : 'IN USE' }}
                 </span>
 
-                <div class="bg-gray-100 rounded-md px-3 py-2 text-sm text-gray-600">
-                    {{ $isAvailable ? 'Already have one here' : 'In use' }}
-                </div>
+                <p class="text-sm text-gray-600 mb-3 {{ $isAvailable ? 'text-green-600' : '' }}">
+                    {{ $isMine ? 'You are using this locker.' : ($isAvailable ? 'Ready to use' : 'Used by someone else') }}
+                </p>
+
+                @if ($isMine)
+                    <form action="{{ route('release-locker', $lockers->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full bg-red-500 text-white text-sm font-semibold rounded-md py-2 hover:bg-red-600 transition-colors">
+                            Release
+                        </button>
+                    </form>
+                @elseif ($isAvailable)
+                    @if ($myInUse)
+                        <button disabled class="w-full bg-gray-200 text-gray-500 text-sm font-semibold rounded-md py-2 cursor-not-allowed">
+                            Already using {{ $myInUse->locker_title }}
+                        </button>
+                    @else
+                        <form action="{{ route('use-locker', $lockers->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full bg-blue-600 text-white text-sm font-semibold rounded-md py-2 hover:bg-blue-700 transition-colors">
+                                Use
+                            </button>
+                        </form>
+                    @endif
+                @else
+                    <button disabled class="w-full bg-gray-200 text-gray-500 text-sm font-semibold rounded-md py-2 cursor-not-allowed">
+                        In use
+                    </button>
+                @endif
             </div>
         @empty
             <p class="text-gray-500 col-span-full">No lockers at this location yet.</p>

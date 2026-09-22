@@ -11,7 +11,9 @@
 <body>
     <div class="flex justify-start gap-10">
         <x-sidbar.user />
-        @yield('content')
+        <main class="flex-1 min-w-0 w-full pt-16 md:pt-0">
+            @yield('content')
+        </main>
     </div>
 </body>
 </html>

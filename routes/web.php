@@ -9,15 +9,36 @@ use App\Http\Controllers\Admin\LocationStaffController;
 
 //user route
 Route::prefix('user')->group(function (){
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MaintenanceController;
+use Illuminate\Support\Facades\Route;
+
+// user route
+Route::redirect('/', '/user/location');
+
+// guest routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('auth')->prefix('user')->group(function () {
     Route::get('/location', [LocationController::class, 'index'])->name('location-user');
     Route::get('/location/view-locker/{id}', [LocationController::class, 'viewLocker'])->name('view-locker');
+    Route::post('/location/locker/{id}/use', [LocationController::class, 'useLocker'])->name('use-locker');
+    Route::post('/location/locker/{id}/release', [LocationController::class, 'releaseLocker'])->name('release-locker');
 });
 
 Route::get('/admin/dashboard', [DashboardController::class, 'adminDashborad'])->name('admin.dashboard');
 
 Route::prefix('maintenance')->name('maintenance.')->group(function () {
     Route::get('/', [MaintenanceController::class, 'index'])->name('index');
-    Route::get('/index', [MaintenanceController::class, 'index'])->name('index'); // → /maintenance/index
     Route::get('/create', [MaintenanceController::class, 'create'])->name('create');
     Route::post('/', [MaintenanceController::class, 'store'])->name('store');
     Route::put('/{maintenance}', [MaintenanceController::class, 'update'])->name('update');
@@ -36,6 +57,7 @@ Route::prefix('locker')->name('locker.')->group(function () {
 });
 
 Route::prefix('location')->name('location.')->group(function () {
+<<<<<<< HEAD
     Route::get('/', [LocationController::class, 'index'])->name('index');
     Route::get('/create', [LocationController::class, 'create'])->name('create');
     Route::post('/', [LocationController::class, 'store'])->name('store');
@@ -43,3 +65,12 @@ Route::prefix('location')->name('location.')->group(function () {
     Route::put('/{location}', [LocationController::class, 'update'])->name('update');
     Route::delete('/{location}', [LocationController::class, 'destroy'])->name('destroy');
 });
+=======
+    Route::get('/', [LockerStaffController::class, 'index'])->name('index');
+    Route::get('/create', [LockerStaffController::class, 'create'])->name('create');
+    Route::post('/', [LockerStaffController::class, 'store'])->name('store');
+    Route::get('/{location}/edit', [LockerStaffController::class, 'edit'])->name('edit');
+    Route::put('/{location}', [LockerLockerStaffControllerController::class, 'update'])->name('update');
+    Route::delete('/{location}', [LockerStaffController::class, 'destroy'])->name('destroy');
+});
+>>>>>>> 5409471c4fef2675276952343a2e49c0ac7110e8
