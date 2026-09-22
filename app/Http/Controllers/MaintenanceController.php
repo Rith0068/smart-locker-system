@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Locker;
 use App\Models\Maintenance;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MaintenanceController extends Controller

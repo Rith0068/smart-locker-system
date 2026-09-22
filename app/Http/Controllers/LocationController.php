@@ -19,7 +19,68 @@ class LocationController extends Controller
             })
             ->get();
 
-        return view('locker-location.index', compact('locations'));
+        $view = $request->routeIs('location.index') ? 'location.index' : 'locker-location.index';
+
+        return view($view, compact('locations'));
+    }
+
+    public function create(): View
+    {
+        return view('location.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name_location' => 'required|string|max:255',
+            'adress'        => 'required|string|max:255',
+            'img'           => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('img')) {
+            $validated['img'] = $request->file('img')->store('locations', 'public');
+        }
+
+        LockerLocation::create($validated);
+
+        return redirect()->route('location.index')
+            ->with('success', 'Location created successfully.');
+    }
+
+    public function edit(int $id): View
+    {
+        $location = LockerLocation::findOrFail($id);
+
+        return view('location.edit', compact('location'));
+    }
+
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        $location = LockerLocation::findOrFail($id);
+
+        $validated = $request->validate([
+            'name_location' => 'required|string|max:255',
+            'adress'        => 'required|string|max:255',
+            'img'           => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('img')) {
+            $validated['img'] = $request->file('img')->store('locations', 'public');
+        }
+
+        $location->update($validated);
+
+        return redirect()->route('location.index')
+            ->with('success', 'Location updated successfully.');
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $location = LockerLocation::findOrFail($id);
+        $location->delete();
+
+        return redirect()->route('location.index')
+            ->with('success', 'Location deleted successfully.');
     }
 
     public function viewLocker(int $id): View

@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('location-user');
+        return redirect()->route('user.dashboard.index');
     }
 
     public function logout(Request $request): RedirectResponse
