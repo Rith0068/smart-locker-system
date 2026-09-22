@@ -57,15 +57,6 @@ Route::prefix('locker')->name('locker.')->group(function () {
 });
 
 Route::prefix('location')->name('location.')->group(function () {
-<<<<<<< HEAD
-    Route::get('/', [LocationController::class, 'index'])->name('index');
-    Route::get('/create', [LocationController::class, 'create'])->name('create');
-    Route::post('/', [LocationController::class, 'store'])->name('store');
-    Route::get('/{location}/edit', [LocationController::class, 'edit'])->name('edit');
-    Route::put('/{location}', [LocationController::class, 'update'])->name('update');
-    Route::delete('/{location}', [LocationController::class, 'destroy'])->name('destroy');
-});
-=======
     Route::get('/', [LockerStaffController::class, 'index'])->name('index');
     Route::get('/create', [LockerStaffController::class, 'create'])->name('create');
     Route::post('/', [LockerStaffController::class, 'store'])->name('store');
@@ -73,4 +64,3 @@ Route::prefix('location')->name('location.')->group(function () {
     Route::put('/{location}', [LockerLockerStaffControllerController::class, 'update'])->name('update');
     Route::delete('/{location}', [LockerStaffController::class, 'destroy'])->name('destroy');
 });
->>>>>>> 5409471c4fef2675276952343a2e49c0ac7110e8
