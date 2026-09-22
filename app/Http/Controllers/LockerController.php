@@ -10,19 +10,22 @@ use Illuminate\Http\Request;
 
 class LockerController extends Controller
 {
-    public function manageLocker(Request $request)
+    public function index(Request $request)
     {
-        $locations = LockerLocation::query()
+        $lockers = Locker::query()
+            ->with(['user', 'location'])
             ->when($request->search, function ($query, $search) {
-                $query->where('name_location', 'like', "%{$search}%")
-                    ->orWhere('adress', 'like', "%{$search}%");
+                $query->where('locker_title', 'like', "%{$search}%")
+                    ->orWhereHas('location', function ($q) use ($search) {
+                        $q->where('name_location', 'like', "%{$search}%");
+                    });
             })
             ->get();
 
-        return view('Locker.index', compact('locations'));
+        return view('Locker.index', compact('lockers'));
     }
 
-    public function manageLockerCreate()
+    public function create()
     {
         $users = User::all();
         $locations = LockerLocation::all();
@@ -30,7 +33,7 @@ class LockerController extends Controller
         return view('Locker.create', compact('users', 'locations'));
     }
 
-    public function manageLockerStore(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'locker_title'  => 'required|string|max:255',
@@ -46,14 +49,14 @@ class LockerController extends Controller
             ->with('success', 'Locker created successfully.');
     }
 
-    public function manageLockerShow($id)
+    public function show($id)
     {
         $locker = Locker::with(['user', 'location'])->findOrFail($id);
 
         return view('Locker.show', compact('locker'));
     }
 
-    public function manageLockerEdit($id)
+    public function edit($id)
     {
         $locker = Locker::findOrFail($id);
         $users = User::all();
@@ -87,22 +90,5 @@ class LockerController extends Controller
 
         return redirect()->route('locker.index')
             ->with('success', 'Locker deleted successfully.');
-    }
-      public function index(Request $request)
-    {
-        $locations = LockerLocation::query()
-            ->when($request->search, function ($query, $search) {
-                $query->where('name_location', 'like', "%{$search}%")
-                    ->orWhere('adress', 'like', "%{$search}%");
-            })
-            ->get();
-
-        return view('location.index', compact('locations'));
-    }
-
-    public function viewLocker($id)
-    {
-        $locker = LockerLocation::findOrFail($id);;
-        return view('locker-location.locker', compact('locker'));
     }
 }

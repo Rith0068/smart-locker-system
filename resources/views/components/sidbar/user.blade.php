@@ -18,7 +18,7 @@
 <div id="overlay" class="md:hidden fixed inset-0 bg-black/40 z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed md:static top-0 left-0 w-72 max-w-[85vw] md:w-80 shrink-0 border-r flex flex-col bg-white h-dvh max-h-dvh z-[65]
+<aside id="sidebar" class="fixed top-0 left-0 w-72 max-w-[85vw] md:w-80 shrink-0 border-r flex flex-col bg-white h-dvh max-h-dvh z-[65]
        -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out
        pt-16 md:pt-0">
   <div class="hidden md:flex items-center py-6 md:py-10 px-5">
@@ -29,8 +29,8 @@
     </div>
   </div>
 
-  <nav class="flex flex-col px-5 gap-2 pt-3 overflow-y-auto flex-1 min-h-0">
-    <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
+  <nav class="flex flex-col px-5 gap-2 pt-3">
+    <a href="{{ route('user.dashboard.index') }}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       Dashboard
     </a>
     <a href="{{route('location-user')}}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">

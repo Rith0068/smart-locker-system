@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css">
 </head>
 <body>
-    <div class="flex justify-start gap-10">
+    <div class="flex">
         <x-sidbar.user />
-        <main class="flex-1 min-w-0 w-full pt-16 md:pt-0">
+        <main class="flex-1 min-w-0 w-full pt-16 md:pt-0 md:ml-80 h-dvh overflow-y-auto">
             @yield('content')
         </main>
     </div>
