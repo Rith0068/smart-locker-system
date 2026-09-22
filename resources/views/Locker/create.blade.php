@@ -11,7 +11,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Locker Title</label>
                 <input type="text" name="locker_title" value="{{ old('locker_title') }}"
-                       class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 @error('locker_title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -20,7 +20,7 @@
                 <select name="user_id" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <option value="">Select user</option>
                     @foreach ($users as $user)
-                        <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>{{ $user->name }}</option>
+                    <option value="{{ $user->id }}" @selected(old('user_id')==$user->id)>{{ $user->name }}</option>
                     @endforeach
                 </select>
                 @error('user_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -31,7 +31,7 @@
                 <select name="locations_id" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <option value="">Select location</option>
                     @foreach ($locations as $location)
-                        <option value="{{ $location->id }}" @selected(old('locations_id') == $location->id)>{{ $location->name_location }}</option>
+                    <option value="{{ $location->id }}" @selected(old('locations_id')==$location->id)>{{ $location->name_location }}</option>
                     @endforeach
                 </select>
                 @error('location_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -40,14 +40,14 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Start</label>
                 <input type="text" name="start" value="{{ old('start') }}"
-                       class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 @error('start') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Releave</label>
                 <input type="text" name="releave" value="{{ old('releave') }}"
-                       class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 @error('releave') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
