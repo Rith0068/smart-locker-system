@@ -9,9 +9,9 @@ use App\Models\User;
 
 class DashboardController extends Controller
 {
-    public function adminDashborad()
+    public function adminIndex()
     {
-        $totalUsers = User::count();
+        $totalUsers = User::all()->count();
 
         $availableLockers = Locker::where(['status' => 'available'])->count();
         $inUseLockers = Locker::where(['status' => 'in_use'])->count();
@@ -25,6 +25,10 @@ class DashboardController extends Controller
             'maintenanceLockers',
             'allLocker'
         ));
+    }
+    public function userIndex()
+    {
+        return view('user-dashboard.index');
     }
 
 

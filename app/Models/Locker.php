@@ -42,9 +42,5 @@ class Locker extends Model
     {
         return $this->hasOne(Maintenance::class, 'lockers_id')->latestOfMany();
     }
-    public function location()
-{
-    return $this->belongsTo(LockerLocation::class, 'locations_id');
 }
-}
-}
+

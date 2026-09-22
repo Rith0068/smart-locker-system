@@ -1,4 +1,4 @@
-@extends('sidbar.layout.staff')
+@extends('layout.staff')
 
 @section('content')
 <div class="max-w-2xl mx-auto py-8 px-4">
