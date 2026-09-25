@@ -6,6 +6,7 @@ use App\Models\Locker;
 use App\Models\LockerLocation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LocationController extends Controller
@@ -90,6 +91,23 @@ class LocationController extends Controller
         return view('locker-location.locker', compact('locker'));
     }
 
+    public function lockers(Request $request): View
+    {
+        $status = $request->query('status');
+
+        $statuses = ['available', 'in_use', 'in_maintenance'];
+
+        $lockers = Locker::with('location')
+            ->when(in_array($status, $statuses), function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->orderBy('locations_id')
+            ->orderBy('locker_title')
+            ->get();
+
+        return view('locker-location.lockers', compact('lockers', 'status', 'statuses'));
+    }
+
     public function useLocker(int $id): RedirectResponse
     {
         $locker = Locker::findOrFail($id);
@@ -106,6 +124,7 @@ class LocationController extends Controller
         $locker->update([
             'user_id' => auth()->id(),
             'status' => 'in_use',
+            'password' => strtoupper(Str::random(6)),
         ]);
 
         return back()->with('success', 'You are now using '.$locker->locker_title.'.');
@@ -120,6 +139,7 @@ class LocationController extends Controller
         $locker->update([
             'user_id' => null,
             'status' => 'available',
+            'password' => null,
         ]);
 
         return back()->with('success', $locker->locker_title.' is now available.');
