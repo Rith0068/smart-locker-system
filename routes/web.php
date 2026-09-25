@@ -27,6 +27,7 @@ Route::middleware('auth')->prefix('user')->group(function () {
         Route::get('/view-locker/{id}', [LocationController::class, 'viewLocker'])->name('view-locker');
         Route::post('/locker/{id}/use', [LocationController::class, 'useLocker'])->name('use-locker');
         Route::post('/locker/{id}/release', [LocationController::class, 'releaseLocker'])->name('release-locker');
+        Route::get('/location/{id}', [LocationController::class, 'show'])->name('location.show');
     });
 });
 
@@ -59,6 +60,7 @@ Route::prefix('admin')->group( function(){
         Route::get('/', [LocationController::class, 'index'])->name('index');
         Route::get('/create', [LocationController::class, 'create'])->name('create');
         Route::post('/', [LocationController::class, 'store'])->name('store');
+        Route::get('/location/{id}', [LocationController::class, 'show'])->name('location.show');
         Route::get('/{location}/edit', [LocationController::class, 'edit'])->name('edit');
         Route::put('/{location}', [LocationController::class, 'update'])->name('update');
         Route::delete('/{location}', [LocationController::class, 'destroy'])->name('destroy');

@@ -35,29 +35,45 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Locker</label>
-                    <select name="lockers_id"
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Location</label>
+                    <select id="location-select"
                             class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             required>
-                        <option value="">Select a locker</option>
-                        @foreach ($lockers as $locker)
-                            <option value="{{ $locker->id }}" {{ old('lockers_id') == $locker->id ? 'selected' : '' }}>
-                                {{ $locker->locker_title ?? 'Locker #' . $locker->id }}
+                        <option value="">Select a location</option>
+                        @foreach ($locations as $location)
+                            <option value="{{ $location->id }}">
+                                {{ $location->name_location }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                    <select name="status"
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Locker</label>
+                    <select name="lockers_id" id="locker-select"
                             class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            required>
-                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Available</option>
-                        <option value="2" {{ old('status') == 2 ? 'selected' : '' }}>Maintenance</option>
-                        <option value="3" {{ old('status') == 3 ? 'selected' : '' }}>In Use</option>
+                            required disabled>
+                        <option value="">Select a location first</option>
+                        @foreach ($lockers as $locker)
+                            <option value="{{ $locker->id }}"
+                                    data-location-id="{{ $locker->locations_id }}"
+                                    {{ old('lockers_id') == $locker->id ? 'selected' : '' }}
+                                    style="display:none;">
+                                {{ $locker->locker_title ?? 'Locker #' . $locker->id }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+                <select name="status"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required>
+                    <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Available</option>
+                    <option value="2" {{ old('status') == 2 ? 'selected' : '' }}>Maintenance</option>
+                </select>
             </div>
 
             <div>
@@ -82,4 +98,28 @@
     </div>
 
 </div>
+
+<script>
+    const locationSelect = document.getElementById('location-select');
+    const lockerSelect = document.getElementById('locker-select');
+    const lockerOptions = Array.from(lockerSelect.options);
+
+    locationSelect.addEventListener('change', function () {
+        const selectedLocationId = this.value;
+
+        // Reset locker select
+        lockerSelect.value = '';
+
+        lockerOptions.forEach(option => {
+            if (option.value === '') {
+                option.style.display = '';
+                return;
+            }
+            const matches = option.dataset.locationId === selectedLocationId;
+            option.style.display = matches ? '' : 'none';
+        });
+
+        lockerSelect.disabled = !selectedLocationId;
+    });
+</script>
 @endsection

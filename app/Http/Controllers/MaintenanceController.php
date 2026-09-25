@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Locker;
+use App\Models\LockerLocation;
 use App\Models\Maintenance;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,9 +19,10 @@ class MaintenanceController extends Controller
 
     public function create()
     {
-        $lockers = Locker::all();
+        $lockers = Locker::with('location')->get();
+        $locations = LockerLocation::all();
 
-        return view('maintenance.create', compact('lockers'));
+        return view('maintenance.create', compact('lockers', 'locations'));
     }
 
     public function store(Request $request)
