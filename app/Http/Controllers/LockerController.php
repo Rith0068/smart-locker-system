@@ -13,16 +13,21 @@ class LockerController extends Controller
     public function index(Request $request)
     {
         $lockers = Locker::query()
-            ->with(['user', 'location'])
-            ->when($request->search, function ($query, $search) {
-                $query->where('locker_title', 'like', "%{$search}%")
-                    ->orWhereHas('location', function ($q) use ($search) {
-                        $q->where('name_location', 'like', "%{$search}%");
+        ->with(['user', 'location'])
+        ->when($request->search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('locker_title', 'like', "%{$search}%")
+                    ->orWhereHas('location', function ($q2) use ($search) {
+                        $q2->where('name_location', 'like', "%{$search}%");
                     });
-            })
-            ->get();
+            });
+        })
+        ->when($request->status, function ($query, $status) {
+            $query->where('status', $status);
+        })
+        ->get();
 
-        return view('Locker.index', compact('lockers'));
+    return view('Locker.index', compact('lockers'));
     }
 
     public function create()

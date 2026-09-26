@@ -26,14 +26,36 @@
     @endif
 
     <form method="GET" class="mb-8">
-        <div class="relative w-full md:w-96">
-            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+        <div class="flex flex-col md:flex-row gap-3">
+            <div class="relative w-full md:w-96">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title or location..."
+                       class="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
             </div>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title or location..."
-                   class="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
+
+            <select name="status" onchange="this.form.submit()"
+                    class="w-full md:w-48 border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
+                <option value="">All Statuses</option>
+                <option value="available" {{ request('status') === 'available' ? 'selected' : '' }}>Available</option>
+                <option value="in_use" {{ request('status') === 'in_use' ? 'selected' : '' }}>In Use</option>
+                <!-- <option value="maintenance" {{ request('status') === 'maintenance' ? 'selected' : '' }}>Maintenance</option> -->
+            </select>
+
+            <button type="submit"
+                    class="inline-flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-lg text-sm font-medium transition">
+                Filter
+            </button>
+
+            @if (request('search') || request('status'))
+                <a href="{{ route('locker.index') }}"
+                   class="inline-flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 px-3 py-2.5 text-sm font-medium transition">
+                    Clear
+                </a>
+            @endif
         </div>
     </form>
 
