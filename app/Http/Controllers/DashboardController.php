@@ -12,13 +12,14 @@ class DashboardController extends Controller
 {
     public function adminIndex()
     {
-        $totalUsers = User::all()->count();
+        $totalUsers = User::count();
 
-        $availableLockers = Locker::where(['status' => 'available'])->count();
-        $inUseLockers = Locker::where(['status' => 'in_use'])->count();
-        $maintenanceLockers = Locker::where(['status' => 'in_maintenance'])->count();
+        $availableLockers = Locker::where('status', 'available')->count();
+        $inUseLockers = Locker::where('status', 'in_use')->count();
+        $maintenanceLockers = Maintenance::where('status', Maintenance::STATUS_MAINTENANCE)->count('lockers_id');
 
-        $allLocker = Locker::all();
+        $allLocker = Maintenance::with('locker.location')->latest()->get();
+
         return view('admin.index', compact(
             'totalUsers',
             'availableLockers',
@@ -27,6 +28,7 @@ class DashboardController extends Controller
             'allLocker'
         ));
     }
+
     public function userIndex()
     {
         $myLockers = Locker::with('location')->where('user_id', auth()->id())->get();
@@ -94,6 +96,4 @@ class DashboardController extends Controller
 
         return collect($sessions)->sortByDesc('start')->values();
     }
-
-
 }

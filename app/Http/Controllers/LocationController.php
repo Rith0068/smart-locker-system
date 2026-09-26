@@ -7,6 +7,7 @@ use App\Models\LockerLocation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class LocationController extends Controller
@@ -66,6 +67,10 @@ class LocationController extends Controller
         ]);
 
         if ($request->hasFile('img')) {
+            // delete old image before saving the new one
+            if ($location->img) {
+                Storage::disk('public')->delete($location->img);
+            }
             $validated['img'] = $request->file('img')->store('locations', 'public');
         }
 
@@ -78,6 +83,12 @@ class LocationController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         $location = LockerLocation::findOrFail($id);
+
+        // delete the image file along with the record
+        if ($location->img) {
+            Storage::disk('public')->delete($location->img);
+        }
+
         $location->delete();
 
         return redirect()->route('location.index')
@@ -144,4 +155,10 @@ class LocationController extends Controller
 
         return back()->with('success', $locker->locker_title.' is now available.');
     }
+    public function show(int $id): View
+{
+    $location = LockerLocation::findOrFail($id);
+
+    return view('location.show', compact('location'));
+}
 }

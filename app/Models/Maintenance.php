@@ -26,9 +26,4 @@ class Maintenance extends Model
             default => 'Unknown',
         };
     }
-    public function create()
-{
-    $lockers = Locker::all();
-    return view('maintenance.create', compact('lockers'));
-}
 }
