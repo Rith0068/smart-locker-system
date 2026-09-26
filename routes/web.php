@@ -8,6 +8,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaintenanceController;
 
 
+// root route: guests see register form, logged-in users go to their dashboard
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route(auth()->user()->role === 2 ? 'admin.dashboard' : 'user.dashboard.index');
+    }
+    return redirect()->route('register');
+});
+
 // guest routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -19,8 +27,9 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->prefix('user')->group(function () {
-
     Route::get('/dashboard', [DashboardController::class, 'userIndex'])->name('user.dashboard.index');
+    Route::get('/history', [DashboardController::class, 'userHistory'])->name('user.history.index');
+    Route::delete('/history/{history}', [DashboardController::class, 'destroyHistory'])->name('user.history.destroy');
 
     Route::prefix('/location')->group(function() {
         Route::get('/', [LocationController::class, 'index'])->name('location-user');
@@ -29,6 +38,8 @@ Route::middleware('auth')->prefix('user')->group(function () {
         Route::post('/locker/{id}/release', [LocationController::class, 'releaseLocker'])->name('release-locker');
         Route::get('/location/{id}', [LocationController::class, 'show'])->name('location.show');
     });
+
+    Route::get('/lockers', [LocationController::class, 'lockers'])->name('user.lockers.index');
 });
 
 

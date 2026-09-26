@@ -19,6 +19,7 @@ class Locker extends Model
         'locations_id',
         'start',
         'releave',
+        'password',
         'img',
         'status',
     ];
@@ -41,6 +42,42 @@ class Locker extends Model
     public function currentMaintenance(): HasOne
     {
         return $this->hasOne(Maintenance::class, 'lockers_id')->latestOfMany();
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (Locker $locker) {
+            if ($locker->user_id) {
+                History::create([
+                    'user_id' => $locker->user_id,
+                    'locker_id' => $locker->id,
+                    'action' => 'use',
+                ]);
+            }
+        });
+
+        static::updating(function (Locker $locker) {
+            if (! $locker->isDirty('user_id')) {
+                return;
+            }
+
+            $old = $locker->getOriginal('user_id');
+            $new = $locker->user_id;
+
+            if (! is_null($old) && is_null($new)) {
+                History::create([
+                    'user_id' => $old,
+                    'locker_id' => $locker->id,
+                    'action' => 'release',
+                ]);
+            } elseif (! is_null($new)) {
+                History::create([
+                    'user_id' => $new,
+                    'locker_id' => $locker->id,
+                    'action' => 'use',
+                ]);
+            }
+        });
     }
 }
 

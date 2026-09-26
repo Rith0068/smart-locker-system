@@ -36,7 +36,7 @@
     <a href="{{route('location-user')}}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       Find Locker
     </a>
-    <a href="#" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
+    <a href="{{ route('user.history.index') }}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
       History
     </a>
   </nav>

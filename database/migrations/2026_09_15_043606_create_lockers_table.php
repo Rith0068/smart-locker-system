@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('locations_id')->constrained()->cascadeOnDelete();
             $table->string('start');
             $table->string('releave');
+            $table->string('password')->unique()->nullable();
             $table->string('status')->default('available');
             $table->timestamps();
         });
