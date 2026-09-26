@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\History;
 use App\Models\LockerLocation;
 use App\Models\Locker;
+use App\Models\LockerLocation;
 use App\Models\Maintenance;
 use App\Models\User;
 
@@ -20,12 +21,17 @@ class DashboardController extends Controller
 
         $allLocker = Maintenance::with('locker.location')->latest()->get();
 
+        $lockers = Locker::with(['user', 'location'])->latest()->take(5)->get();
+        $locations = LockerLocation::withCount('lockers')->get();
+
         return view('admin.index', compact(
             'totalUsers',
             'availableLockers',
             'inUseLockers',
             'maintenanceLockers',
-            'allLocker'
+            'allLocker',
+            'lockers',
+            'locations'
         ));
     }
 
