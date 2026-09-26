@@ -73,6 +73,91 @@
         </div>
     </div>
 
+    {{-- Lockers + Locations tables side by side --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {{-- Recent Lockers table --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-gray-700">Recent Lockers</h2>
+                <a href="{{ route('locker.index') }}" class="text-xs text-blue-600 hover:text-blue-800 font-medium">View all</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="text-gray-400 text-xs uppercase tracking-wide border-b border-gray-100">
+                            <th class="px-5 py-3 font-medium">Title</th>
+                            <th class="px-5 py-3 font-medium">User</th>
+                            <th class="px-5 py-3 font-medium">Location</th>
+                            <th class="px-5 py-3 font-medium">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse ($lockers as $locker)
+                            @php
+                                $statusClass = $locker->status === 'available'
+                                    ? 'bg-green-100 text-green-700'
+                                    : ($locker->status === 'in_use'
+                                        ? 'bg-blue-100 text-blue-700'
+                                        : 'bg-red-100 text-red-700');
+                            @endphp
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-5 py-3 font-medium text-gray-800">{{ $locker->locker_title }}</td>
+                                <td class="px-5 py-3 text-gray-600">{{ $locker->user->name ?? '—' }}</td>
+                                <td class="px-5 py-3 text-gray-600">{{ $locker->location->name_location ?? '—' }}</td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                                        {{ ucfirst(str_replace('_', ' ', $locker->status)) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-5 py-10 text-gray-400 text-center">
+                                    No lockers found
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- Locations table --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-gray-700">Locations</h2>
+                <span class="text-xs text-gray-400">{{ $locations->count() }} total</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="text-gray-400 text-xs uppercase tracking-wide border-b border-gray-100">
+                            <th class="px-5 py-3 font-medium">Name</th>
+                            <th class="px-5 py-3 font-medium text-right">Lockers</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse ($locations as $location)
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-5 py-3 font-medium text-gray-800">{{ $location->name_location }}</td>
+                                <td class="px-5 py-3 text-gray-600 text-right">{{ $location->lockers_count }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="2" class="px-5 py-10 text-gray-400 text-center">
+                                    No locations found
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
     {{-- Open maintenance issues --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
