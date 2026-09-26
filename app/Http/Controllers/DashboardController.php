@@ -61,6 +61,15 @@ class DashboardController extends Controller
         return view('user-dashboard.history', compact('histories', 'sessionCount'));
     }
 
+    public function destroyHistory(History $history)
+    {
+        abort_unless($history->user_id === auth()->id(), 403);
+
+        $history->delete();
+
+        return back()->with('success', 'History record deleted.');
+    }
+
     private function buildSessions($histories)
     {
         $sessions = [];

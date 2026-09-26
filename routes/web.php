@@ -29,6 +29,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->prefix('user')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'userIndex'])->name('user.dashboard.index');
     Route::get('/history', [DashboardController::class, 'userHistory'])->name('user.history.index');
+    Route::delete('/history/{history}', [DashboardController::class, 'destroyHistory'])->name('user.history.destroy');
 
     Route::prefix('/location')->group(function() {
         Route::get('/', [LocationController::class, 'index'])->name('location-user');

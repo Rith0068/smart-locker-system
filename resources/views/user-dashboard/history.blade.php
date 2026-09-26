@@ -4,6 +4,12 @@
 
 <div class="flex flex-col pt-5 w-full sm:px-6 lg:px-8 space-y-6">
 
+    @if (session('success'))
+        <div class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div>
         <h6 class="text-2xl sm:text-3xl font-bold">History</h6>
         <p class="text-base sm:text-lg text-gray-600">Your locker activity</p>
@@ -24,6 +30,7 @@
                         <th class="px-5 py-3 font-medium">Locker</th>
                         <th class="px-5 py-3 font-medium">Location</th>
                         <th class="px-5 py-3 font-medium">Date</th>
+                        <th class="px-5 py-3 font-medium text-right">Delete</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -45,10 +52,20 @@
                             <td class="px-5 py-3 text-gray-600">
                                 {{ $item->created_at }}
                             </td>
+                            <td class="px-5 py-3 text-right">
+                                <form action="{{ route('user.history.destroy', $item) }}" method="POST"
+                                      onsubmit="return confirm('Delete this history record?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-5 py-10 text-gray-400 text-center">
+                            <td colspan="5" class="px-5 py-10 text-gray-400 text-center">
                                 No activity yet.
                             </td>
                         </tr>

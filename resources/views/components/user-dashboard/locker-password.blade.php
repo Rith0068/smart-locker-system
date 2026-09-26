@@ -1,13 +1,13 @@
-<div class="rounded-xl">
+<div class="rounded-xl space-y-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">Current Locker</h2>
 
     @forelse($lockers as $locker)
         <div class="bg-white rounded-xl shadow-sm p-6 flex items-center justify-between gap-4">
-            <div>
+            <div class="space-y-3">
                 <h3 class="text-xl font-extrabold text-gray-900">{{ $locker->locker_title }}</h3>
-                <p class="text-gray-600 text-sm mt-1">{{ $locker->location->name_location ?? 'Your current locker and recent activity.' }}</p>
+                <p class="text-gray-600 text-sm">{{ $locker->location->name_location ?? 'Your current locker and recent activity.' }}</p>
 
-                <div class="mt-3 inline-flex items-center gap-2 bg-green-50 rounded-full pl-3 pr-1 py-1">
+                <div class="inline-flex items-center gap-2 bg-green-50 rounded-full pl-3 pr-1 py-1">
                     <span class="text-xs font-medium text-gray-500 uppercase">Key</span>
                     <span class="text-lg font-bold text-gray-900">{{ $locker->password ?? '—' }}</span>
                     @if($locker->password)
