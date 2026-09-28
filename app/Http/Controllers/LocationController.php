@@ -6,24 +6,17 @@ use App\Models\Locker;
 use App\Models\LockerLocation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LocationController extends Controller
 {
     public function index(Request $request): View
     {
-        $locations = LockerLocation::query()
-            ->when($request->search, function ($query, $search) {
-                $query->where('name_location', 'like', "%{$search}%")
-                    ->orWhere('adress', 'like', "%{$search}%");
-            })
-            ->get();
+        $locations = LockerLocation::search($request->search)->get();
 
-        $view = $request->routeIs('location.index') ? 'location.index' : 'locker-location.index';
-
-        return view($view, compact('locations'));
+        return view('location.index', compact('locations'));
     }
 
     public function create(): View
@@ -35,8 +28,8 @@ class LocationController extends Controller
     {
         $validated = $request->validate([
             'name_location' => 'required|string|max:255',
-            'adress'        => 'required|string|max:255',
-            'img'           => 'nullable|image|max:2048',
+            'adress' => 'required|string|max:255',
+            'img' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('img')) {
@@ -62,8 +55,8 @@ class LocationController extends Controller
 
         $validated = $request->validate([
             'name_location' => 'required|string|max:255',
-            'adress'        => 'required|string|max:255',
-            'img'           => 'nullable|image|max:2048',
+            'adress' => 'required|string|max:255',
+            'img' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('img')) {
@@ -95,6 +88,13 @@ class LocationController extends Controller
             ->with('success', 'Location deleted successfully.');
     }
 
+    public function viewLocation(Request $request): View
+    {
+        $locations = LockerLocation::search($request->search)->get();
+
+        return view('locker-location.index', compact('locations'));
+    }
+
     public function viewLocker(int $id): View
     {
         $locker = LockerLocation::with('lockers')->findOrFail($id);
@@ -105,11 +105,10 @@ class LocationController extends Controller
     public function lockers(Request $request): View
     {
         $status = $request->query('status');
-
-        $statuses = ['available', 'in_use', 'in_maintenance'];
+        $statuses = Locker::statuses();
 
         $lockers = Locker::with('location')
-            ->when(in_array($status, $statuses), function ($query) use ($status) {
+            ->when(in_array($status, $statuses, true), function ($query) use ($status) {
                 $query->where('status', $status);
             })
             ->orderBy('locations_id')
@@ -123,18 +122,18 @@ class LocationController extends Controller
     {
         $locker = Locker::findOrFail($id);
 
-        abort_unless($locker->status === 'available', 403, 'This locker is already in use.');
+        abort_unless($locker->isAvailable(), 403, 'This locker is not available.');
 
         $alreadyUsed = Locker::where('locations_id', $locker->locations_id)
             ->where('user_id', auth()->id())
-            ->where('status', 'in_use')
+            ->where('status', Locker::STATUS_IN_USE)
             ->exists();
 
         abort_if($alreadyUsed, 403, 'You can only use one locker at this location.');
 
         $locker->update([
             'user_id' => auth()->id(),
-            'status' => 'in_use',
+            'status' => Locker::STATUS_IN_USE,
             'password' => strtoupper(Str::random(6)),
         ]);
 
@@ -149,16 +148,17 @@ class LocationController extends Controller
 
         $locker->update([
             'user_id' => null,
-            'status' => 'available',
+            'status' => Locker::STATUS_AVAILABLE,
             'password' => null,
         ]);
 
         return back()->with('success', $locker->locker_title.' is now available.');
     }
-    public function show(int $id): View
-{
-    $location = LockerLocation::findOrFail($id);
 
-    return view('location.show', compact('location'));
-}
+    public function show(int $id): View
+    {
+        $location = LockerLocation::findOrFail($id);
+
+        return view('location.show', compact('location'));
+    }
 }

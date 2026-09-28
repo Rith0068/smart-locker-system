@@ -76,6 +76,18 @@
 
                 <div class="px-6 py-5 space-y-5">
                     <div class="flex gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2m0 0H4m0 0h16v10a2 2 0 01-2 2H6a2 2 0 01-2-2V8zm4 4h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase text-gray-400">Size</p>
+                            <p class="font-medium text-gray-800">{{ $locker->size ?? '—' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
                         <div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -83,7 +95,7 @@
                         </div>
                         <div>
                             <p class="text-xs uppercase text-gray-400">Start</p>
-                            <p class="font-medium text-gray-800">{{ $locker->start }}</p>
+                            <p class="font-medium text-gray-800">{{ $locker->start ?? '—' }}</p>
                         </div>
                     </div>
 
@@ -95,9 +107,23 @@
                         </div>
                         <div>
                             <p class="text-xs uppercase text-gray-400">Release</p>
-                            <p class="font-medium text-gray-800">{{ $locker->releave }}</p>
+                            <p class="font-medium text-gray-800">{{ $locker->releave ?? '—' }}</p>
                         </div>
                     </div>
+
+                    @if ($locker->description)
+                        <div class="flex gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase text-gray-400">Description</p>
+                                <p class="font-medium text-gray-800 whitespace-pre-line">{{ $locker->description }}</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 

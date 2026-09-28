@@ -60,12 +60,12 @@ class DashboardController extends Controller
     {
         $histories = History::with('locker', 'locker.location')
             ->where('user_id', auth()->id())
-            ->latest()
+            ->orderBy('created_at')
             ->get();
 
-        $sessionCount = $this->buildSessions($histories->sortBy('created_at'))->count();
+        $sessions = $this->buildSessions($histories);
 
-        return view('user-dashboard.history', compact('histories', 'sessionCount'));
+        return view('user-dashboard.history', compact('sessions'));
     }
 
     public function destroyHistory(History $history)
@@ -86,6 +86,8 @@ class DashboardController extends Controller
                 $sessions[] = [
                     'locker_id' => $entry->locker_id,
                     'locker' => $entry->locker,
+                    'use_id' => $entry->id,
+                    'release_id' => null,
                     'start' => $entry->created_at,
                     'end' => null,
                 ];
@@ -93,6 +95,7 @@ class DashboardController extends Controller
                 for ($i = count($sessions) - 1; $i >= 0; $i--) {
                     if ($sessions[$i]['locker_id'] === $entry->locker_id && $sessions[$i]['end'] === null) {
                         $sessions[$i]['end'] = $entry->created_at;
+                        $sessions[$i]['release_id'] = $entry->id;
                         break;
                     }
                 }

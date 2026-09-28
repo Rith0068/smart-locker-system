@@ -61,7 +61,7 @@
         <!-- Hero image -->
         <div class="relative">
             @if ($location->img)
-                <img src="{{ Storage::url($location->img) }}"
+                <img src="{{ $location->img ? Storage::url($location->img) : asset('images/camera.png') }}"
                      alt="{{ $location->name_location }}"
                      class="w-full h-80 sm:h-[28rem] object-cover">
             @else

@@ -32,7 +32,7 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::delete('/history/{history}', [DashboardController::class, 'destroyHistory'])->name('user.history.destroy');
 
     Route::prefix('/location')->group(function() {
-        Route::get('/', [LocationController::class, 'index'])->name('location-user');
+        Route::get('/', [LocationController::class, 'viewLocation'])->name('location-user');
         Route::get('/view-locker/{id}', [LocationController::class, 'viewLocker'])->name('view-locker');
         Route::post('/locker/{id}/use', [LocationController::class, 'useLocker'])->name('use-locker');
         Route::post('/locker/{id}/release', [LocationController::class, 'releaseLocker'])->name('release-locker');
