@@ -42,7 +42,7 @@
                 <option value="">All Statuses</option>
                 <option value="available" {{ request('status') === 'available' ? 'selected' : '' }}>Available</option>
                 <option value="in_use" {{ request('status') === 'in_use' ? 'selected' : '' }}>In Use</option>
-                <!-- <option value="maintenance" {{ request('status') === 'maintenance' ? 'selected' : '' }}>Maintenance</option> -->
+                <option value="maintenance" {{ request('status') === 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
             </select>
 
             <button type="submit"
