@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Locker;
-use App\Models\User;
 use App\Models\LockerLocation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LockerController extends Controller
@@ -13,21 +12,21 @@ class LockerController extends Controller
     public function index(Request $request)
     {
         $lockers = Locker::query()
-        ->with(['user', 'location' , 'maintenances'])
-        ->when($request->search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('locker_title', 'like', "%{$search}%")
-                    ->orWhereHas('location', function ($q2) use ($search) {
-                        $q2->where('name_location', 'like', "%{$search}%");
-                    });
-            });
-        })
-        ->when($request->status, function ($query, $status) {
-            $query->where('status', $status);
-        })
-        ->get();
+            ->with(['user', 'location', 'maintenances'])
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('locker_title', 'like', "%{$search}%")
+                        ->orWhereHas('location', function ($q2) use ($search) {
+                            $q2->where('name_location', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($request->status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->get();
 
-    return view('Locker.index', compact('lockers'));
+        return view('Locker.index', compact('lockers'));
     }
 
     public function create()
@@ -41,11 +40,13 @@ class LockerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'locker_title'  => 'required|string|max:255',
-            'user_id'       => 'required|exists:users,id',
-            'locations_id'  => 'required|exists:locations,id',
-            'start'         => 'required|string|max:255',
-            'releave'       => 'required|string|max:255',
+            'locker_title' => 'required|string|max:255',
+            'size' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'user_id' => 'nullable|exists:users,id',
+            'locations_id' => 'required|exists:locations,id',
+            'start' => 'nullable|string|max:255',
+            'releave' => 'nullable|string|max:255',
         ]);
 
         Locker::create($validated);
@@ -75,11 +76,13 @@ class LockerController extends Controller
         $locker = Locker::findOrFail($id);
 
         $validated = $request->validate([
-            'locker_title'  => 'required|string|max:255',
-            'user_id'       => 'required|exists:users,id',
-            'locations_id'  => 'required|exists:locations,id',
-            'start'         => 'required|string|max:255',
-            'releave'       => 'required|string|max:255',
+            'locker_title' => 'required|string|max:255',
+            'size' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'user_id' => 'nullable|exists:users,id',
+            'locations_id' => 'required|exists:locations,id',
+            'start' => 'nullable|string|max:255',
+            'releave' => 'nullable|string|max:255',
         ]);
 
         $locker->update($validated);

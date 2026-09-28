@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name_location');
             $table->string('adress');
-            $table->string('img');
+            $table->string('img')->nullable();
             $table->timestamps();
         });
     }

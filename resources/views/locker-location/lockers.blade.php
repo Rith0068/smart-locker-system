@@ -43,8 +43,13 @@
     <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         @forelse($lockers as $locker)
             @php
-                $isAvailable = $locker->status === 'available';
-                $isMine = $locker->user_id === auth()->id() && $locker->status === 'in_use';
+                $isAvailable = $locker->isAvailable();
+                $isMine = $locker->isUsedBy(auth()->id());
+                $statusClass = $isAvailable
+                    ? 'bg-green-100 text-green-700'
+                    : ($locker->isInMaintenance()
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-blue-100 text-blue-700');
             @endphp
             <div class="border border-gray-100 rounded-xl p-3 shadow-sm bg-white">
                 <h6 class="font-bold text-base mb-2">{{ $locker->locker_title }}</h6>
@@ -53,9 +58,16 @@
                     {{ $locker->location->name_location ?? '—' }}
                 </p>
 
-                <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full my-2
-                    {{ $isAvailable ? 'bg-green-100 text-green-700' : ($locker->status === 'in_maintenance' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700') }}">
-                    {{ ucwords(str_replace('_', ' ', $locker->status)) }}
+                @if ($locker->size)
+                    <p class="text-xs text-gray-500 mt-1">Size: {{ $locker->size }}</p>
+                @endif
+
+                @if ($locker->description)
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ $locker->description }}</p>
+                @endif
+
+                <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full my-2 {{ $statusClass }}">
+                    {{ $locker->statusLabel() }}
                 </span>
 
                 @if($isMine)
@@ -72,7 +84,7 @@
                     </a>
                 @else
                     <button disabled class="w-full bg-gray-200 text-gray-500 text-sm font-semibold rounded-md py-2 cursor-not-allowed">
-                        {{ $locker->status === 'in_maintenance' ? 'In maintenance' : 'In use' }}
+                        {{ $locker->isInMaintenance() ? 'In maintenance' : 'In use' }}
                     </button>
                 @endif
             </div>

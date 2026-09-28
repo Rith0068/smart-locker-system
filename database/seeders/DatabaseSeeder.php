@@ -9,7 +9,7 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-/**
+    /**
      * Run the database seeds.
      */
     public function run(): void
@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             UserData::class,
             LockerLocationData::class,
             LockerData::class,
+            MaintenanceData::class,
+            HistoryData::class,
         ]);
     }
 }
