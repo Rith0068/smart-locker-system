@@ -42,7 +42,7 @@
                 <option value="">All Statuses</option>
                 <option value="available" {{ request('status') === 'available' ? 'selected' : '' }}>Available</option>
                 <option value="in_use" {{ request('status') === 'in_use' ? 'selected' : '' }}>In Use</option>
-                <!-- <option value="maintenance" {{ request('status') === 'maintenance' ? 'selected' : '' }}>Maintenance</option> -->
+                <option value="maintenance" {{ request('status') === 'maintenance' ? 'selected' : '' }}>Maintenance</option>
             </select>
 
             <button type="submit"
@@ -68,6 +68,7 @@
                         <th class="px-5 py-3 font-medium">User</th>
                         <th class="px-5 py-3 font-medium">Location</th>
                         <th class="px-5 py-3 font-medium">Status</th>
+                        <th class="px-5 py-3 font-medium">Maintenance</th>
                         <th class="px-5 py-3 font-medium text-right">Actions</th>
                     </tr>
                 </thead>
@@ -79,6 +80,9 @@
                                 : ($locker->status === 'in_use'
                                     ? 'bg-blue-100 text-blue-700'
                                     : 'bg-red-100 text-red-700');
+
+                            $maintenanceCount = $locker->maintenances->count();
+                            $lastMaintenance  = $locker->maintenances->sortByDesc('created_at')->first();
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3 font-medium text-gray-800">{{ $locker->locker_title }}</td>
@@ -89,6 +93,18 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                     {{ ucfirst(str_replace('_', ' ', $locker->status)) }}
                                 </span>
+                            </td>
+                            <td class="px-5 py-3 text-gray-600">
+                                @if ($maintenanceCount)
+                                    <a href="{{ route('maintenance.index') }}"
+                                       class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors"
+                                       title="Last: {{ $lastMaintenance->created_at->format('d M Y') }}">
+                                        {{ $maintenanceCount }} record{{ $maintenanceCount === 1 ? '' : 's' }}
+                                    </a>
+                                    <p class="text-xs text-gray-400 mt-1">Last: {{ $lastMaintenance->created_at->format('d M Y') }}</p>
+                                @else
+                                    —
+                                @endif
                             </td>
                             <td class="px-5 py-3">
                                 <div class="flex justify-end items-center gap-2">
@@ -123,7 +139,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-14 text-center">
+                            <td colspan="6" class="px-5 py-14 text-center">
                                 <div class="flex flex-col items-center gap-2 text-gray-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-4.586a1 1 0 00-.707.293l-1.414 1.414a1 1 0 01-.707.293h-2.172a1 1 0 01-.707-.293l-1.414-1.414A1 1 0 007.586 13H3" />

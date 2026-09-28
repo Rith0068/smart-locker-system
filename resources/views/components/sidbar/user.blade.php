@@ -1,10 +1,39 @@
+@php
+    $navItems = [
+        [
+            'label'  => 'Dashboard',
+            'route'  => 'user.dashboard.index',
+            'active' => 'user.dashboard.*',
+            'icon'   => ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
+        ],
+        [
+            'label'  => 'Find Locker',
+            'route'  => 'location-user',
+            'active' => 'location-user*',
+            'icon'   => ['M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z'],
+        ],
+        [
+            'label'  => 'History',
+            'route'  => 'user.history.index',
+            'active' => 'user.history.*',
+            'icon'   => ['M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
+        ],
+    ];
+
+    $user     = auth()->user();
+    $roleName = $user->role === 2 ? 'Staff' : 'User';
+    $initial  = mb_strtoupper(mb_substr($user->name, 0, 1));
+@endphp
+
 <!-- Mobile top bar -->
-<div class="md:hidden fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 border-b bg-white z-[70]">
-  <div class="flex items-center gap-2">
-    <img src="{{ asset('images/logo.png') }}" class="w-8 h-8" alt="logo">
-    <span class="font-bold text-[16px]">SmartHub locker</span>
+<div class="md:hidden fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 border-b border-gray-200 bg-white z-[70]">
+  <div class="flex items-center gap-2.5">
+    <img src="{{ asset('images/logo.png') }}" class="w-8 h-8" alt="SmartHub locker logo">
+    <span class="font-bold text-[16px] text-gray-800">SmartHub locker</span>
   </div>
-  <button id="menuBtn" class="p-2" aria-label="Open menu">
+  <button id="menuBtn" type="button"
+          class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
     <svg id="iconHamburger" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
@@ -18,41 +47,73 @@
 <div id="overlay" class="md:hidden fixed inset-0 bg-black/40 z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed top-0 left-0 w-72 max-w-[85vw] md:w-80 shrink-0 border-r flex flex-col bg-white h-dvh max-h-dvh z-[65]
-       -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out
-       pt-16 md:pt-0">
-  <div class="hidden md:flex items-center py-6 md:py-10 px-5">
-    <img src="{{ asset('images/logo.png') }}" class="w-16 h-16 md:w-20 md:h-20" alt="logo">
-    <div class="flex flex-col px-4 py-2">
-      <h5 class="font-bold text-[18px]">SmartHub locker</h5>
-      <p class="text-[16px]">public locker network</p>
-    </div>
-  </div>
+<aside id="sidebar"
+       class="fixed top-0 left-0 w-72 max-w-[85vw] md:w-80 shrink-0 border-r border-gray-200 flex flex-col bg-white h-dvh max-h-dvh z-[65]
+              -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out pt-16 md:pt-0">
 
-  <nav class="flex flex-col px-5 gap-2 pt-3">
-    <a href="{{ route('user.dashboard.index') }}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
-      Dashboard
-    </a>
-    <a href="{{route('location-user')}}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
-      Find Locker
-    </a>
-    <a href="{{ route('user.history.index') }}" class="flex justify-start bg-gray-200 px-5 py-3 rounded-lg text-[18px] font-bold hover:bg-gray-100">
-      History
-    </a>
+  <!-- Brand (desktop) -->
+  <a href="{{ route('user.dashboard.index') }}" class="hidden md:flex items-center gap-4 px-6 py-8 border-b border-gray-100">
+    <img src="{{ asset('images/logo.png') }}" class="w-14 h-14" alt="SmartHub locker logo">
+    <div class="flex flex-col leading-tight">
+      <span class="font-bold text-[18px] text-gray-800">SmartHub locker</span>
+      <span class="text-sm text-gray-500">Public locker network</span>
+    </div>
+  </a>
+
+  <!-- Navigation -->
+  <nav class="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-1" aria-label="Main navigation">
+    @foreach ($navItems as $item)
+      @php
+        $isActive = request()->routeIs($item['active']);
+        $base     = 'group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[16px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
+        $state    = $isActive
+            ? 'bg-blue-50 text-blue-700'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
+      @endphp
+
+      <a href="{{ route($item['route']) }}"
+         class="{{ $base }} {{ $state }}"
+         @if ($isActive) aria-current="page" @endif>
+        @if ($isActive)
+          <span class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-blue-600"></span>
+        @endif
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 {{ $isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600' }}"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          @foreach ($item['icon'] as $path)
+            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}" />
+          @endforeach
+        </svg>
+
+        <span class="flex-1">{{ $item['label'] }}</span>
+      </a>
+    @endforeach
   </nav>
 
-<div class="flex flex-col px-5 pt-10 md:pt-40 pb-5 mt-auto shrink-0">
-      <div class="flex justify-start gap-4 mb-4">
-        <p class="bg-blue-200 rounded-lg px-2 py-1 text-[14px] md:text-[16px]">{{ auth()->user()->role === 2 ? 'Staff' : 'User' }}</p>
-        <p class="bg-gray-100 rounded-lg px-2 py-1 text-[14px] md:text-[16px]">{{ auth()->user()->name }}</p>
+  <!-- User -->
+  <div class="shrink-0 border-t border-gray-100 p-4">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold shrink-0" aria-hidden="true">
+        {{ auth()->user()->role === 1 ? 'Staff' : 'U' }}
       </div>
-      <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="flex justify-center border border-gray-200 py-2 px-10 rounded-lg hover:bg-red-400 hover:text-gray-100">
-          Log out
-        </button>
-      </form>
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->role === 1 ? 'Staff' : 'User Member' }}</p>
+        <p class="text-xs text-gray-500">{{ auth()->user()->role === 1 ? 'Staff' : 'User' }}</p>
+      </div>
     </div>
+
+    <form action="{{ route('logout') }}" method="POST">
+      @csrf
+      <button type="submit"
+              class="w-full inline-flex items-center justify-center gap-2 border border-gray-200 py-2.5 rounded-lg text-sm font-medium text-gray-700
+                     hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Log out
+      </button>
+    </form>
+  </div>
 </aside>
 
 <script>
@@ -66,6 +127,8 @@ $(function () {
     $overlay.removeClass('opacity-0 pointer-events-none');
     $('#iconHamburger').addClass('hidden');
     $('#iconClose').removeClass('hidden');
+    $menuBtn.attr({ 'aria-expanded': 'true', 'aria-label': 'Close menu' });
+    $('body').addClass('overflow-hidden');
   }
 
   function closeMenu() {
@@ -73,6 +136,8 @@ $(function () {
     $overlay.addClass('opacity-0 pointer-events-none');
     $('#iconHamburger').removeClass('hidden');
     $('#iconClose').addClass('hidden');
+    $menuBtn.attr({ 'aria-expanded': 'false', 'aria-label': 'Open menu' });
+    $('body').removeClass('overflow-hidden');
   }
 
   $menuBtn.on('click', function () {
@@ -80,6 +145,16 @@ $(function () {
   });
 
   $overlay.on('click', closeMenu);
+
+  // Close with the Escape key
+  $(document).on('keydown', function (e) {
+    if (e.key === 'Escape' && !$sidebar.hasClass('-translate-x-full')) closeMenu();
+  });
+
+  // Close after tapping a link on mobile
+  $sidebar.find('nav a').on('click', function () {
+    if ($(window).width() < 768) closeMenu();
+  });
 
   $(window).on('resize', function () {
     if ($(window).width() >= 768) closeMenu();

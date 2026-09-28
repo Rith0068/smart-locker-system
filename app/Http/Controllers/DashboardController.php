@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\History;
 use App\Models\LockerLocation;
 use App\Models\Locker;
-use App\Models\LockerLocation;
 use App\Models\Maintenance;
 use App\Models\User;
 
