@@ -16,13 +16,21 @@ class DashboardController extends Controller
 
         $availableLockers = Locker::where('status', 'available')->count();
         $inUseLockers = Locker::where('status', 'in_use')->count();
-        $maintenanceLockers = Maintenance::where('status', Maintenance::STATUS_MAINTENANCE)->count('lockers_id');
 
-        $allLocker = Maintenance::with('locker.location')->latest()->get();
+        // Each locker counted once, only active maintenance records
+        $maintenanceLockers = Maintenance::where('status', Maintenance::STATUS_MAINTENANCE)
+            ->distinct('lockers_id')
+            ->count('lockers_id');
+
+        // Open issues only (status = Maintenance), paginated
+        $allLocker = Maintenance::with('locker.location')
+            ->where('status', Maintenance::STATUS_MAINTENANCE)
+            ->latest()
+            ->paginate(10);
 
         $lockers = Locker::with(['user', 'location'])->latest()->take(5)->get();
         $locations = LockerLocation::withCount('lockers')->get();
-
+        
         return view('admin.index', compact(
             'totalUsers',
             'availableLockers',

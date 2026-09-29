@@ -14,6 +14,7 @@
         <p class="text-sm text-gray-500 mt-1">Create a new locker record</p>
     </div>
 
+
     <form action="{{ route('locker.store') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         @csrf
 
@@ -23,59 +24,61 @@
 
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            {{-- Box 1: Locker Title --}}
+            {{-- Locker Title --}}
             <div>
-                <label class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
+                <label for="locker_title" class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                     Locker Title
                 </label>
-                <input type="text" name="locker_title" value="{{ old('locker_title') }}"
+                <input type="text" id="locker_title" name="locker_title" value="{{ old('locker_title') }}"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
                 @error('locker_title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Box 2: Location --}}
+            {{-- Location --}}
             <div>
-                <label class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
+                <label for="locations_id" class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Location
                 </label>
-                <select name="locations_id" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
+                <select id="locations_id" name="locations_id"
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
                     <option value="">Select location</option>
                     @foreach ($locations as $location)
-                        <option value="{{ $location->id }}" @selected(old('locations_id') == $location->id)>{{ $location->name_location }}</option>
+                        <option value="{{ $location->id }}" @selected((string) old('locations_id') === (string) $location->id)>{{ $location->name_location }}</option>
                     @endforeach
                 </select>
                 @error('locations_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Box 3: Size --}}
+            {{-- Size --}}
             <div>
-                <label class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
+                <label for="size" class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2m0 0H4m0 0h16v10a2 2 0 01-2 2H6a2 2 0 01-2-2V8zm4 4h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01" />
                     </svg>
                     Size
                 </label>
-                <input type="text" name="size" value="{{ old('size') }}"
+                <input type="text" id="size" name="size" value="{{ old('size') }}"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
                 @error('size') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Box 4: Description --}}
+
+            {{-- Description --}}
             <div class="md:col-span-2">
-                <label class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
+                <label for="description" class="text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Description
                 </label>
-                <textarea name="description" rows="3"
+                <textarea id="description" name="description" rows="3"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">{{ old('description') }}</textarea>
                 @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>

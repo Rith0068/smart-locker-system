@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Locker;
 use App\Models\LockerLocation;
 use App\Models\Maintenance;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MaintenanceController extends Controller
 {
     public function index()
     {
-        $maintenances = Maintenance::with('locker')->latest()->paginate(10);
+        $maintenances = Maintenance::with('locker.location')
+            ->where('status', Maintenance::STATUS_MAINTENANCE)
+            ->latest('updated_at')
+            ->paginate(10);
 
         return view('maintenance.index', compact('maintenances'));
     }
@@ -29,20 +32,26 @@ class MaintenanceController extends Controller
     {
         $validated = $request->validate([
             'description' => 'required|string|max:255',
-            'lockers_id' => 'required|exists:lockers,id',
-            'status' => 'required|in:1,2,3',
+            'lockers_id'  => 'required|exists:lockers,id',
+            'status'      => 'required|in:1,2,3',
         ]);
 
-        Maintenance::create($validated);
+        DB::transaction(function () use ($validated) {
+            Maintenance::create($validated);
 
-        return redirect()->route('maintenance.index')->with('status', 'Maintenance record added.');
+            Locker::whereKey($validated['lockers_id'])
+                ->update(['status' => Locker::STATUS_IN_MAINTENANCE]);
+        });
+
+        return redirect()->route('maintenance.index')
+            ->with('status', 'Maintenance record added.');
     }
 
     public function update(Request $request, Maintenance $maintenance)
     {
         $validated = $request->validate([
             'description' => 'required|string|max:255',
-            'status' => 'required|in:1,2,3',
+            'status'      => 'required|in:1,2,3',
         ]);
 
         $maintenance->update($validated);
@@ -52,7 +61,19 @@ class MaintenanceController extends Controller
 
     public function destroy(Maintenance $maintenance)
     {
-        $maintenance->delete();
+        DB::transaction(function () use ($maintenance) {
+            $locker = $maintenance->locker;
+
+            $maintenance->delete();
+
+            if ($locker && ! $locker->maintenances()->exists()) {
+                $locker->update([
+                    'status' => $locker->user_id
+                        ? Locker::STATUS_IN_USE
+                        : Locker::STATUS_AVAILABLE,
+                ]);
+            }
+        });
 
         return back()->with('status', 'Maintenance record deleted.');
     }
