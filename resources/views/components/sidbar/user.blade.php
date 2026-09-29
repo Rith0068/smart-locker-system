@@ -96,11 +96,11 @@
 
     <div class="flex items-center gap-3 mb-3">
       <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold shrink-0" aria-hidden="true">
-        {{ auth()->user()->role === 1 ? 'Staff' : 'U' }}
+        {{ $initial }}
       </div>
       <div class="min-w-0">
-        <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->role === 1 ? 'Staff' : 'User Member' }}</p>
-        <p class="text-xs text-gray-500">{{ auth()->user()->role === 1 ? 'Staff' : 'User' }}</p>
+        <p class="text-sm font-semibold text-gray-800 truncate">{{ $user->name }}</p>
+        <p class="text-xs text-gray-500">{{ $roleName }}</p>
       </div>
     </div>
 
