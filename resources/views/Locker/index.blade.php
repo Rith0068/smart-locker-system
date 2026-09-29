@@ -1,11 +1,16 @@
 @extends('layout.staff')
 
 @section('content')
+@php
+    $isPaginated = $lockers instanceof \Illuminate\Contracts\Pagination\Paginator;
+    $totalLockers = method_exists($lockers, 'total') ? $lockers->total() : $lockers->count();
+@endphp
+
 <div class="w-full px-6 py-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-800">Lockers</h1>
-            <p class="text-sm text-gray-500 mt-1">{{ $lockers->count() }} locker{{ $lockers->count() === 1 ? '' : 's' }} total</p>
+            <p class="text-sm text-gray-500 mt-1">{{ $totalLockers }} locker{{ $totalLockers === 1 ? '' : 's' }} total</p>
         </div>
         <a href="{{ route('locker.create') }}"
            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition">
@@ -40,9 +45,9 @@
             <select name="status" onchange="this.form.submit()"
                     class="w-full md:w-48 border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none">
                 <option value="">All Statuses</option>
-                <option value="available" {{ request('status') === 'available' ? 'selected' : '' }}>Available</option>
-                <option value="in_use" {{ request('status') === 'in_use' ? 'selected' : '' }}>In Use</option>
-                <!-- <option value="maintenance" {{ request('status') === 'maintenance' ? 'selected' : '' }}>Maintenance</option> -->
+                <option value="{{ \App\Models\Locker::STATUS_AVAILABLE }}" {{ request('status') === \App\Models\Locker::STATUS_AVAILABLE ? 'selected' : '' }}>Available</option>
+                <option value="{{ \App\Models\Locker::STATUS_IN_USE }}" {{ request('status') === \App\Models\Locker::STATUS_IN_USE ? 'selected' : '' }}>In Use</option>
+                <option value="{{ \App\Models\Locker::STATUS_IN_MAINTENANCE }}" {{ request('status') === \App\Models\Locker::STATUS_IN_MAINTENANCE ? 'selected' : '' }}>In Maintenance</option>
             </select>
 
             <select name="location" onchange="this.form.submit()"
@@ -53,9 +58,6 @@
                         {{ $location->name_location }}
                     </option>
                 @endforeach
-                <option value="{{ \App\Models\Locker::STATUS_AVAILABLE }}" {{ request('status') === \App\Models\Locker::STATUS_AVAILABLE ? 'selected' : '' }}>Available</option>
-                <option value="{{ \App\Models\Locker::STATUS_IN_USE }}" {{ request('status') === \App\Models\Locker::STATUS_IN_USE ? 'selected' : '' }}>In Use</option>
-                <option value="{{ \App\Models\Locker::STATUS_IN_MAINTENANCE }}" {{ request('status') === \App\Models\Locker::STATUS_IN_MAINTENANCE ? 'selected' : '' }}>In Maintenance</option>
             </select>
 
             <button type="submit"
@@ -82,7 +84,6 @@
                         <th class="px-5 py-3 font-medium">User</th>
                         <th class="px-5 py-3 font-medium">Location</th>
                         <th class="px-5 py-3 font-medium">Status</th>
-                        <th class="px-5 py-3 font-medium">Maintenance</th>
                         <th class="px-5 py-3 font-medium text-right">Actions</th>
                     </tr>
                 </thead>
@@ -94,9 +95,6 @@
                                 : ($locker->isInUse()
                                     ? 'bg-blue-100 text-blue-700'
                                     : 'bg-red-100 text-red-700');
-
-                            $maintenanceCount = $locker->maintenances->count();
-                            $lastMaintenance  = $locker->maintenances->sortByDesc('created_at')->first();
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3 font-medium text-gray-800">{{ $locker->locker_title }}</td>
@@ -108,18 +106,6 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                     {{ $locker->statusLabel() }}
                                 </span>
-                            </td>
-                            <td class="px-5 py-3 text-gray-600">
-                                @if ($maintenanceCount)
-                                    <a href="{{ route('maintenance.index') }}"
-                                       class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors"
-                                       title="Last: {{ $lastMaintenance->created_at->format('d M Y') }}">
-                                        {{ $maintenanceCount }} record{{ $maintenanceCount === 1 ? '' : 's' }}
-                                    </a>
-                                    <p class="text-xs text-gray-400 mt-1">Last: {{ $lastMaintenance->created_at->format('d M Y') }}</p>
-                                @else
-                                    —
-                                @endif
                             </td>
                             <td class="px-5 py-3">
                                 <div class="flex justify-end items-center gap-2">
@@ -168,5 +154,11 @@
             </table>
         </div>
     </div>
+
+    @if ($isPaginated && method_exists($lockers, 'links'))
+        <div class="mt-6">
+            {{ $lockers->links() }}
+        </div>
+    @endif
 </div>
 @endsection

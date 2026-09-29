@@ -161,9 +161,9 @@
     {{-- Open maintenance issues --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-gray-700">Open Maintenance Issues</h2>
-            @if($allLocker->isNotEmpty())
-                <span class="text-xs text-gray-400">{{ $allLocker->count() }} record{{ $allLocker->count() === 1 ? '' : 's' }}</span>
+            <h2 class="text-sm font-semibold text-gray-700">Open Maintenance</h2>
+            @if($allLocker->total() > 0)
+                <span class="text-xs text-gray-400">{{ $allLocker->total() }} record{{ $allLocker->total() === 1 ? '' : 's' }}</span>
             @endif
         </div>
         <div class="overflow-x-auto">
@@ -171,29 +171,25 @@
                 <thead>
                     <tr class="text-gray-400 text-xs uppercase tracking-wide border-b border-gray-100">
                         <th class="px-5 py-3 font-medium">Locker</th>
+                        <th class="px-5 py-3.5 font-medium">Size</th>
                         <th class="px-5 py-3 font-medium">Location</th>
                         <th class="px-5 py-3 font-medium">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($allLocker as $item)
-                        @php
-                            $statusColors = [
-                                \App\Models\Maintenance::STATUS_AVAILABLE   => 'bg-green-100 text-green-700',
-                                \App\Models\Maintenance::STATUS_IN_USE      => 'bg-blue-100 text-blue-700',
-                                \App\Models\Maintenance::STATUS_MAINTENANCE => 'bg-red-100 text-red-700',
-                            ];
-                            $statusClass = $statusColors[$item->status] ?? 'bg-red-100 text-red-700';
-                        @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3 font-medium text-gray-800">
                                 {{ $item->locker->locker_title ?? '—' }}
+                            </td>
+                            <td class="px-5 py-3 font-medium text-gray-800">
+                                {{ $item->locker->size ?? '—' }}
                             </td>
                             <td class="px-5 py-3 text-gray-600 max-w-xs truncate" title="{{ $item->locker->location->name_location ?? '' }}">
                                 {{ $item->locker->location->name_location ?? '—' }}
                             </td>
                             <td class="px-5 py-3">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
                                     <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                     {{ $item->statusLabel() }}
                                 </span>
@@ -209,9 +205,16 @@
                 </tbody>
             </table>
         </div>
-        @if($allLocker->isNotEmpty())
+
+        @if ($allLocker->hasPages())
+            <div class="px-5 py-4 border-t border-gray-100">
+                {{ $allLocker->links() }}
+            </div>
+        @endif
+
+        @if($allLocker->total() > 0)
             <div class="px-5 py-3 border-t border-gray-100 text-right">
-                <a href="{{ route('maintenance.index') }}" class="text-blue-600  p-2 text-sm font-medium hover:text-blue-900">
+                <a href="{{ route('maintenance.index') }}" class="text-blue-600 p-2 text-sm font-medium hover:text-blue-900">
                     View all maintenance records
                 </a>
             </div>
