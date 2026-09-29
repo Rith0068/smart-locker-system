@@ -83,6 +83,7 @@
                         <th class="px-5 py-3 font-medium">Size</th>
                         <th class="px-5 py-3 font-medium">User</th>
                         <th class="px-5 py-3 font-medium">Location</th>
+                        <th class="px-5 py-3 font-medium">Adress</th>
                         <th class="px-5 py-3 font-medium">Status</th>
                         <th class="px-5 py-3 font-medium text-right">Actions</th>
                     </tr>
@@ -99,8 +100,9 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3 font-medium text-gray-800">{{ $locker->locker_title }}</td>
                             <td class="px-5 py-3 text-gray-600">{{ $locker->size ?? '—' }}</td>
-                            <td class="px-5 py-3 text-gray-600">{{ $locker->user->name ?? '—' }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $locker->user->name ?? 'No User' }}</td>
                             <td class="px-5 py-3 text-gray-600">{{ $locker->location->name_location ?? '—' }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $locker->location->adress ?? 'No User' }}</td>
                             <td class="px-5 py-3">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
                                     <span class="w-1.5 h-1.5 rounded-full bg-current"></span>

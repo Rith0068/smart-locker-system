@@ -173,6 +173,7 @@
                         <th class="px-5 py-3 font-medium">Locker</th>
                         <th class="px-5 py-3.5 font-medium">Size</th>
                         <th class="px-5 py-3 font-medium">Location</th>
+                        <th class="px-5 py-3 font-medium">Adress</th>
                         <th class="px-5 py-3 font-medium">Status</th>
                     </tr>
                 </thead>
@@ -187,6 +188,9 @@
                             </td>
                             <td class="px-5 py-3 text-gray-600 max-w-xs truncate" title="{{ $item->locker->location->name_location ?? '' }}">
                                 {{ $item->locker->location->name_location ?? '—' }}
+                            </td>
+                            <td class="px-5 py-3 font-medium text-gray-800">
+                                {{ $item->locker->location->adress ?? '—' }}
                             </td>
                             <td class="px-5 py-3">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
