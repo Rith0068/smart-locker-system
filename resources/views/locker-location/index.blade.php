@@ -22,8 +22,7 @@
             <form action="{{ route('view-locker', ['id' => $location->id]) }}" method="GET">
                 <button type="submit" class="w-full text-left">
                     <div class="flex flex-col w-60 border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                        <!-- <img src="{{ $location->img ?? asset('images/library.jpg') }}" -->
-                        <img src="{{  asset('images/camera.png') }}"
+                        <img src="{{ $location->img ? Storage::url($location->img) : asset('images/camera.png') }}"
                         class="w-full h-30 sm:h-40 object-cover" alt="{{ $location->name_location }}">
                         <div class="py-3 px-3">
                             <h6 class="font-bold text-base sm:text-lg">

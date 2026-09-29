@@ -53,6 +53,9 @@
                         {{ $location->name_location }}
                     </option>
                 @endforeach
+                <option value="{{ \App\Models\Locker::STATUS_AVAILABLE }}" {{ request('status') === \App\Models\Locker::STATUS_AVAILABLE ? 'selected' : '' }}>Available</option>
+                <option value="{{ \App\Models\Locker::STATUS_IN_USE }}" {{ request('status') === \App\Models\Locker::STATUS_IN_USE ? 'selected' : '' }}>In Use</option>
+                <option value="{{ \App\Models\Locker::STATUS_IN_MAINTENANCE }}" {{ request('status') === \App\Models\Locker::STATUS_IN_MAINTENANCE ? 'selected' : '' }}>In Maintenance</option>
             </select>
 
             <button type="submit"
@@ -75,6 +78,7 @@
                 <thead>
                     <tr class="text-gray-400 text-xs uppercase tracking-wide border-b border-gray-100">
                         <th class="px-5 py-3 font-medium">Title</th>
+                        <th class="px-5 py-3 font-medium">Size</th>
                         <th class="px-5 py-3 font-medium">User</th>
                         <th class="px-5 py-3 font-medium">Location</th>
                         <th class="px-5 py-3 font-medium">Status</th>
@@ -85,9 +89,9 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($lockers as $locker)
                         @php
-                            $statusClass = $locker->status === 'available'
+                            $statusClass = $locker->isAvailable()
                                 ? 'bg-green-100 text-green-700'
-                                : ($locker->status === 'in_use'
+                                : ($locker->isInUse()
                                     ? 'bg-blue-100 text-blue-700'
                                     : 'bg-red-100 text-red-700');
 
@@ -96,12 +100,13 @@
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3 font-medium text-gray-800">{{ $locker->locker_title }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $locker->size ?? '—' }}</td>
                             <td class="px-5 py-3 text-gray-600">{{ $locker->user->name ?? '—' }}</td>
                             <td class="px-5 py-3 text-gray-600">{{ $locker->location->name_location ?? '—' }}</td>
                             <td class="px-5 py-3">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }}">
                                     <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
-                                    {{ ucfirst(str_replace('_', ' ', $locker->status)) }}
+                                    {{ $locker->statusLabel() }}
                                 </span>
                             </td>
                             <td class="px-5 py-3 text-gray-600">

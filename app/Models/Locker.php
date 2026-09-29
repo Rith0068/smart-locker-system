@@ -13,8 +13,16 @@ class Locker extends Model
 
     const ROLE_STAFF = 2;
 
+    const STATUS_AVAILABLE = 'available';
+
+    const STATUS_IN_USE = 'in_use';
+
+    const STATUS_IN_MAINTENANCE = 'in_maintenance';
+
     protected $fillable = [
         'locker_title',
+        'size',
+        'description',
         'user_id',
         'locations_id',
         'start',
@@ -23,6 +31,45 @@ class Locker extends Model
         'img',
         'status',
     ];
+
+    public static function statuses(): array
+    {
+        return [
+            self::STATUS_AVAILABLE,
+            self::STATUS_IN_USE,
+            self::STATUS_IN_MAINTENANCE,
+        ];
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->status === self::STATUS_AVAILABLE;
+    }
+
+    public function isInUse(): bool
+    {
+        return $this->status === self::STATUS_IN_USE;
+    }
+
+    public function isInMaintenance(): bool
+    {
+        return $this->status === self::STATUS_IN_MAINTENANCE;
+    }
+
+    public function isUsedBy(?int $userId): bool
+    {
+        return $this->isInUse() && $this->user_id === $userId;
+    }
+
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            self::STATUS_AVAILABLE => 'Available',
+            self::STATUS_IN_USE => 'In Use',
+            self::STATUS_IN_MAINTENANCE => 'In Maintenance',
+            default => 'Unknown',
+        };
+    }
 
     public function user(): BelongsTo
     {
@@ -80,4 +127,3 @@ class Locker extends Model
         });
     }
 }
-

@@ -43,7 +43,7 @@
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden group flex flex-col">
                 <a href="{{ route('location.show', $location->id) }}" class="relative block">
                     @if ($location->img)
-                        <img src="{{ Storage::url($location->img) }}" alt="{{ $location->name_location }}"
+                        <img src="{{ $location->img ? Storage::url($location->img) : asset('images/camera.png') }}" alt="{{ $location->name_location }}"
                              class="w-full h-44 object-cover group-hover:scale-105 transition duration-300">
                     @else
                         <div class="w-full h-44 bg-gray-50 flex items-center justify-center text-gray-300">

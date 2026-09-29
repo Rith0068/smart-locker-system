@@ -1,6 +1,8 @@
 @extends('layout.user')
 
 @section('content')
+
+ <!-- locker's cart  -->
 <div class="flex flex-col pt-5 w-full sm:px-6 lg:px-8">
     @if (session('success'))
         <div class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
@@ -29,11 +31,9 @@
     <p class="text-base sm:text-lg text-gray-600">
         {{ $locker->adress }}
     </p>
-
     <div class="mt-4">
-        <img src="{{ asset('images/camera.png') }}" class="w-full h-60 rounded-xl" alt="">
+        <img src="{{ $locker->img ? Storage::url($locker->img) : asset('images/camera.png') }}" class="w-full h-60 rounded-xl" alt="">
     </div>
-
     <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
             <h6 class="text-lg sm:text-xl font-bold">Locker locations</h6>
@@ -42,31 +42,37 @@
     </div>
 
     @php
-        $myInUse = $locker->lockers->firstWhere(function ($item) {
-            return $item->status === 'in_use' && $item->user_id === auth()->id();
-        });
+        $myInUse = $locker->lockers->first(fn ($item) => $item->isUsedBy(auth()->id()));
     @endphp
 
-    <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        @forelse($locker->lockers as $lockers)
+    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        @forelse($locker->lockers as $item)
             @php
-                $isAvailable = $lockers->status === 'available';
-                $isMine = $lockers->user_id === auth()->id() && $lockers->status === 'in_use';
+                $isAvailable = $item->isAvailable();
+                $isMine = $item->isUsedBy(auth()->id());
+                $statusClass = $isAvailable
+                    ? 'bg-green-100 text-green-700'
+                    : ($item->isInMaintenance()
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-blue-100 text-blue-700');
             @endphp
             <div class="border border-gray-100 rounded-xl p-3 shadow-sm bg-white">
-                <h6 class="font-bold text-base mb-2">{{ $lockers->locker_title }}</h6>
+                <h6 class="font-bold text-base mb-2">{{ $item->locker_title }}</h6>
+                
 
-                <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-2
-                    {{ $isAvailable ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' }}">
-                    {{ $isAvailable ? 'AVAILABLE' : 'IN USE' }}
+                <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-2 {{ $statusClass }}">
+                    {{ strtoupper($item->statusLabel()) }}
                 </span>
+                @if ($item->size)
+                    <p class="text-xs text-gray-500 mb-1">Size: {{ $item->size }}</p>
+                @endif
 
-                <p class="text-sm text-gray-600 mb-3 {{ $isAvailable ? 'text-green-600' : '' }}">
-                    {{ $isMine ? 'You are using this locker.' : ($isAvailable ? 'Ready to use' : 'Used by someone else') }}
-                </p>
+                @if ($item->description)
+                    <p class="text-xs text-gray-500 mb-2 line-clamp-2">{{ $item->description }}</p>
+                @endif
 
                 @if ($isMine)
-                    <form action="{{ route('release-locker', $lockers->id) }}" method="POST">
+                    <form action="{{ route('release-locker', $item->id) }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full bg-red-500 text-white text-sm font-semibold rounded-md py-2 hover:bg-red-600 transition-colors">
                             Release
@@ -78,7 +84,7 @@
                             Already using {{ $myInUse->locker_title }}
                         </button>
                     @else
-                        <form action="{{ route('use-locker', $lockers->id) }}" method="POST">
+                        <form action="{{ route('use-locker', $item->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="w-full bg-blue-600 text-white text-sm font-semibold rounded-md py-2 hover:bg-blue-700 transition-colors">
                                 Use
@@ -87,7 +93,7 @@
                     @endif
                 @else
                     <button disabled class="w-full bg-gray-200 text-gray-500 text-sm font-semibold rounded-md py-2 cursor-not-allowed">
-                        In use
+                        {{ $item->isInMaintenance() ? 'In maintenance' : 'In use' }}
                     </button>
                 @endif
             </div>

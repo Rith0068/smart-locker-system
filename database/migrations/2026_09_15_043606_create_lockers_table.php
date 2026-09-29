@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('lockers', function (Blueprint $table) {
             $table->id();
             $table->string('locker_title');
+            $table->string('size')->nullable();
+            $table->text('description')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('locations_id')->constrained()->cascadeOnDelete();
-            $table->string('start');
-            $table->string('releave');
+            $table->string('start')->nullable();
+            $table->string('releave')->nullable();
             $table->string('password')->unique()->nullable();
             $table->string('status')->default('available');
             $table->timestamps();
