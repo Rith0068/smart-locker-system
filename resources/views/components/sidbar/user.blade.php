@@ -92,6 +92,8 @@
 
   <!-- User -->
   <div class="shrink-0 border-t border-gray-100 p-4">
+    <x-auth.alert />
+
     <div class="flex items-center gap-3 mb-3">
       <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold shrink-0" aria-hidden="true">
         {{ auth()->user()->role === 1 ? 'Staff' : 'U' }}
