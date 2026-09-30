@@ -11,36 +11,39 @@ use App\Models\User;
 class DashboardController extends Controller
 {
     public function adminIndex()
-    {
-        $totalUsers = User::count();
+{
+    $totalUsers = User::count();
 
-        $availableLockers = Locker::where('status', 'available')->count();
-        $inUseLockers = Locker::where('status', 'in_use')->count();
+    $availableLockers = Locker::where('status', 'available')->count();
+    $inUseLockers     = Locker::where('status', 'in_use')->count();
 
-        // Each locker counted once, only active maintenance records
-        $maintenanceLockers = Maintenance::where('status', Maintenance::STATUS_MAINTENANCE)
-            ->distinct('lockers_id')
-            ->count('lockers_id');
+    // Count lockers that are in maintenance status,
+    // or that have an active maintenance record
+    $maintenanceLockers = Locker::where('status', 'maintenance')
+        ->orWhereHas('maintenances', function ($maintenance) {
+            $maintenance->where('status', Maintenance::STATUS_MAINTENANCE);
+        })
+        ->count();
 
-        // Open issues only (status = Maintenance), paginated
-        $allLocker = Maintenance::with('locker.location')
-            ->where('status', Maintenance::STATUS_MAINTENANCE)
-            ->latest()
-            ->paginate(10);
+    // Open issues, paginated
+    $allLocker = Maintenance::with('locker.location')
+        ->where('status', Maintenance::STATUS_MAINTENANCE)
+        ->latest()
+        ->paginate(10);
 
-        $lockers = Locker::with(['user', 'location'])->latest()->take(5)->get();
-        $locations = LockerLocation::withCount('lockers')->get();
-        
-        return view('admin.index', compact(
-            'totalUsers',
-            'availableLockers',
-            'inUseLockers',
-            'maintenanceLockers',
-            'allLocker',
-            'lockers',
-            'locations'
-        ));
-    }
+    $lockers   = Locker::with(['user', 'location'])->latest()->take(5)->get();
+    $locations = LockerLocation::withCount('lockers')->get();
+
+    return view('admin.index', compact(
+        'totalUsers',
+        'availableLockers',
+        'inUseLockers',
+        'maintenanceLockers',
+        'allLocker',
+        'lockers',
+        'locations'
+    ));
+}
 
     public function userIndex()
     {
